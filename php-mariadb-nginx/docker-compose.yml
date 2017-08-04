@@ -1,0 +1,49 @@
+# this compose file assumes the following:
+#   - jwilder/nginx-proxy{:alpine} is running on the host
+#   - a volume named "nginx-vhosts" exists on the host
+#
+# Consult the README for more information.
+
+version: '3'
+
+services:
+  web:
+    build:
+      context: ./lib/docker/web
+      args:
+        VIRTUAL_HOST: local.example.com
+        APP_ROOT: /var/www/html
+        APP_INDEX: index.php
+        PHP_HOSTNAME: php-fpm
+    ports:
+      - 80
+    volumes:
+      - ./src:/var/www/html:z
+
+  php-fpm:
+    build: ./lib/docker/php
+    environment:
+      DATABASE_HOST: database
+      DATABASE_NAME: foo
+      DATABASE_USER: root
+      DATABASE_PASS:
+    volumes:
+      - ./src:/var/www/html:z
+
+  database:
+    image: mariadb:10.2
+    environment:
+      MYSQL_DATABASE: foo
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+        - dbdata:/var/lib/mysql
+        - ./lib/docker/database/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:z
+
+volumes:
+  dbdata:
+
+
+networks:
+  default:
+    external:
+      name: nginx-proxy

@@ -8,4 +8,6 @@ $database_pass = getenv('DATABASE_PASS');
 $dbConn = new PDO("mysql:host={$database_host};dbname={$database_name}", $database_user, $database_pass);
 $stmt = $dbConn->query("desc users;")->fetchAll();
 
-var_dump($stmt);
+echo '<pre>';
+print_r($stmt);
+echo '</pre>';

@@ -1,4 +1,4 @@
-# compose-starter-kits/php-mariadb-nginx
+# compose-kits/php-mariadb-nginx
 
 Example starter repository for a php application in containers.
 
